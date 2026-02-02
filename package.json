@@ -1,0 +1,43 @@
+{
+  "name": "convos-node-sdk",
+  "version": "1.0.0",
+  "description": "Convos invite system middleware for XMTP agents",
+  "license": "MIT",
+  "author": "",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "convos-node-sdk": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src tests",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@noble/ciphers": "^1.2.1",
+    "@noble/hashes": "^1.7.1",
+    "@noble/secp256k1": "^2.2.3",
+    "@xmtp/agent-sdk": "^2.0.1",
+    "commander": "^13.1.0",
+    "pako": "^2.1.0",
+    "protobufjs": "^7.4.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/node": "^22.13.1",
+    "@types/pako": "^2.0.3",
+    "eslint": "^9.39.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0",
+    "vitest": "^3.0.5"
+  }
+}
