@@ -1,5 +1,6 @@
 export {
   startAgent,
+  type AgentProfile,
   type AgentRuntime,
   type AgentRuntimeOptions,
   type AgentState,

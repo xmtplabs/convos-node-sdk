@@ -13,10 +13,16 @@ import { bytesToHex } from "../utils/hex.js";
 const DEFAULT_DATA_DIR = ".convos-agent";
 const STATE_FILE = "agent.json";
 
+export interface AgentProfile {
+  name?: string;
+  image?: string;
+}
+
 export interface AgentState {
   privateKey: string;
   address: string;
   createdAt: string;
+  profile?: AgentProfile;
 }
 
 export interface MessageContext {
@@ -53,6 +59,12 @@ export interface AgentRuntime {
     conversationId: string;
     inviteUrl: string;
   }>;
+  /** Sets profile on all conversations in the list */
+  setProfileOnAllConversations: (profile: AgentProfile) => Promise<void>;
+  /** Saves profile to data JSON and applies to all conversations */
+  saveProfile: (profile: AgentProfile) => Promise<void>;
+  /** Gets the current stored profile */
+  getProfile: () => AgentProfile | undefined;
 }
 
 function ensureDataDir(dataDir: string): void {
@@ -185,6 +197,29 @@ export async function startAgent(
 
   await agent.start();
 
+  // Helper to set profile on all conversations
+  const setProfileOnAllConversations = async (profile: AgentProfile): Promise<void> => {
+    const conversations = await agent.client.conversations.list();
+    await Promise.all(
+      conversations.map(async (conversation) => {
+        try {
+          const group = convos.group(conversation as any);
+          await group.setConversationProfile({
+            name: profile.name,
+            image: profile.image,
+          });
+        } catch {
+          // Ignore errors for individual conversations (e.g., DMs)
+        }
+      })
+    );
+  };
+
+  // Apply stored profile on start if available
+  if (state.profile && (state.profile.name || state.profile.image)) {
+    await setProfileOnAllConversations(state.profile);
+  }
+
   return {
     agent,
     convos,
@@ -229,5 +264,14 @@ export async function startAgent(
         inviteUrl: invite.url,
       };
     },
+    setProfileOnAllConversations,
+    saveProfile: async (profile: AgentProfile) => {
+      // Update state with new profile
+      state.profile = profile;
+      saveState(dataDir, state);
+      // Apply to all conversations
+      await setProfileOnAllConversations(profile);
+    },
+    getProfile: () => state.profile,
   };
 }

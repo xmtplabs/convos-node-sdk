@@ -284,4 +284,87 @@ program
     process.on("SIGTERM", shutdown);
   });
 
+program
+  .command("accept")
+  .description("Wait for a pending invite and accept it")
+  .option("-d, --data-dir <path>", "Data directory for persistent storage", ".convos-agent")
+  .action(async (options) => {
+    const runtime = await startAgent({
+      dataDir: options.dataDir,
+      env: getEnv(),
+      apiUrl: getApiUrl(),
+      onInvite: async (ctx) => {
+        await ctx.accept();
+        process.stdout.write(`${ctx.conversationId}\n`);
+        await runtime.stop();
+        process.exit(0);
+      },
+    });
+
+    const shutdown = async () => {
+      await runtime.stop();
+      process.exit(0);
+    };
+
+    process.on("SIGINT", shutdown);
+    process.on("SIGTERM", shutdown);
+  });
+
+program
+  .command("profile")
+  .description("Set the profile (name and/or image) for all conversations")
+  .option("-d, --data-dir <path>", "Data directory for persistent storage", ".convos-agent")
+  .option("-n, --name <name>", "Profile display name")
+  .option("-i, --image <url>", "Profile image URL")
+  .action(async (options) => {
+    if (!options.name && !options.image) {
+      // Show current profile if no options provided
+      const runtime = await startAgent({
+        dataDir: options.dataDir,
+        env: getEnv(),
+        apiUrl: getApiUrl(),
+      });
+
+      const profile = runtime.getProfile();
+      if (profile && (profile.name || profile.image)) {
+        if (profile.name) {
+          process.stdout.write(`Name: ${profile.name}\n`);
+        }
+        if (profile.image) {
+          process.stdout.write(`Image: ${profile.image}\n`);
+        }
+      } else {
+        process.stdout.write("No profile set\n");
+      }
+
+      await runtime.stop();
+      return;
+    }
+
+    const runtime = await startAgent({
+      dataDir: options.dataDir,
+      env: getEnv(),
+      apiUrl: getApiUrl(),
+    });
+
+    // Get current profile and merge with new values
+    const currentProfile = runtime.getProfile() || {};
+    const newProfile = {
+      name: options.name !== undefined ? options.name : currentProfile.name,
+      image: options.image !== undefined ? options.image : currentProfile.image,
+    };
+
+    await runtime.saveProfile(newProfile);
+
+    process.stdout.write("Profile updated and applied to all conversations\n");
+    if (newProfile.name) {
+      process.stdout.write(`Name: ${newProfile.name}\n`);
+    }
+    if (newProfile.image) {
+      process.stdout.write(`Image: ${newProfile.image}\n`);
+    }
+
+    await runtime.stop();
+  });
+
 program.parse();

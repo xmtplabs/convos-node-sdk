@@ -20,8 +20,11 @@ convos-node-sdk --prod <command>
 ## Quick Reference
 
 ```bash
+# Choose a profile name
+convos-node-sdk --prod profile --name "Fiddler's Green"
+
 # Create a new conversation and get invite URL
-convos-node-sdk --prod start-convo --name "Session Name"
+convos-node-sdk --prod start-convo --name "Session Name" --no-auto-accept
 
 # Send a message to a specific conversation
 convos-node-sdk --prod send -c <conversation-id> "Your message here"
@@ -44,40 +47,33 @@ convos-node-sdk --prod join "<invite-url>"
 
 ## Session Flow
 
+### 0. Choose a name for yourself
+
+Pick a name for yourself that feels right for this codebase, have a little fun with it. First Last name.
+
+```bash
+# Create a new conversation for this session
+convos-node-sdk --prod profile --name "First Last"
+```
+
 ### 1. Start a New Conversation Session
 
 At the beginning of a task where you want to communicate with the user over XMTP:
 
 ```bash
 # Create a new conversation for this session
-INVITE_URL=$(convos-node-sdk --prod start-convo --name "Task: Brief Description" --no-auto-accept)
-echo "Join the conversation: $INVITE_URL"
+INVITE_ID=$(convos-node-sdk --prod start-convo --name "Task: Brief Description" --no-auto-accept)
+echo "\e]8;;$INVITE_ID\e\\Click here\e]8;;\e\\\n"
 ```
-
-Present the invite URL to the user and ask them to join.
 
 ### 2. Wait for User to Join
 
 Wait for the user to join and capture the conversation ID:
+It is critical that the stdout that prints the URL has no spaces or formatting inserted so that the link is clickable in the terminal.
 
 ```bash
 # Start a new convo and wait for first join (returns conversation ID)
-CONVO_ID=$(convos-node-sdk --prod start-convo --name "Session Name" 2>/dev/null)
-# The invite URL is printed to stdout first, then waits for join
-```
-
-Or use a two-step approach:
-
-```bash
-# Step 1: Create and get invite URL without waiting
-INVITE_URL=$(convos-node-sdk --prod start-convo --name "Session" --no-auto-accept)
-
-# Step 2: Listen in background for the join, then get the conversation ID
-convos-node-sdk --prod listen --auto-accept &
-LISTEN_PID=$!
-
-# After user joins, list conversations to find the new one
-CONVO_ID=$(convos-node-sdk --prod list | head -1)
+CONVO_ID=$(convos-node-sdk --prod accept 2>/dev/null)
 ```
 
 ### 3. Confirm Connection
@@ -207,16 +203,12 @@ convos-node-sdk --prod -d ./my-session start-convo --name "Custom Session"
 # 1. Create conversation and capture invite URL
 echo "Creating XMTP conversation..."
 INVITE_URL=$(convos-node-sdk --prod start-convo --name "Code Review Session" --no-auto-accept)
-echo "Please join: $INVITE_URL"
 
-# 2. Wait for user to join (with timeout)
+echo "\e]8;;$INVITE_ID\e\\Click here\e]8;;\e\\\n"
+
+# 2. Wait for user to join and get conversation ID
 echo "Waiting for you to join..."
-convos-node-sdk --prod start-convo --name "Code Review Session" &
-START_PID=$!
-
-# Give user time to join, then get conversation ID
-sleep 5
-CONVO_ID=$(convos-node-sdk --prod list | grep -v "^$" | head -1)
+CONVO_ID=$(convos-node-sdk --prod accept)
 
 if [ -z "$CONVO_ID" ]; then
   echo "No conversation found. Please join the invite link."
