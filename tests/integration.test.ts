@@ -96,7 +96,7 @@ describe("End-to-end integration", () => {
       });
 
       expect(invite.slug).toBeDefined();
-      expect(invite.url).toContain("popup.convos.org/v2");
+      expect(invite.url).toContain("dev.convos.org/v2");
 
       // Register invite handler that accepts
       convos.on("invite", async (ctx) => {

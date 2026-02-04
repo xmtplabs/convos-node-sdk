@@ -7,7 +7,7 @@ import {
   decryptInviteConversationId,
   type ParsedInvite,
 } from "../invite/signed-invite.js";
-import { generateInviteURL, parseInviteCode } from "../invite/encoding.js";
+import { generateInviteURL, parseInviteCode, getInviteBaseURL } from "../invite/encoding.js";
 import {
   encodeConversationMetadata,
   decodeConversationMetadata,
@@ -156,8 +156,10 @@ export interface JoinResult {
 export interface ConvosMiddlewareOptions {
   /** The creator's secp256k1 private key. Can be Uint8Array (32 bytes) or hex string (with or without 0x prefix). If not provided, reads from XMTP_WALLET_KEY env var */
   privateKey?: Uint8Array | string;
-  /** Base URL for invite links (default: https://popup.convos.org/v2) */
+  /** Base URL for invite links. If not provided, defaults based on env: dev/local → dev.convos.org, production → popup.convos.org */
   inviteBaseURL?: string;
+  /** XMTP environment, used to determine default invite base URL */
+  env?: string;
 }
 
 type InviteHandler = (ctx: InviteContext) => Promise<void>;
@@ -211,7 +213,7 @@ export class ConvosMiddleware {
       this.privateKey = this.normalizePrivateKey(envKey);
     }
 
-    this.inviteBaseURL = options.inviteBaseURL ?? "https://popup.convos.org/v2";
+    this.inviteBaseURL = options.inviteBaseURL ?? getInviteBaseURL(options.env);
   }
 
   /**
