@@ -2,6 +2,18 @@ import { base64UrlEncode, base64UrlDecode } from "../utils/base64url.js";
 import { compressIfSmaller, decompress } from "../utils/compression.js";
 
 const IMESSAGE_SEPARATOR = "*";
+
+/**
+ * Returns the appropriate invite base URL for the given XMTP environment.
+ * - production: https://popup.convos.org/v2
+ * - dev/local: https://dev.convos.org/v2
+ */
+export function getInviteBaseURL(env: string = "dev"): string {
+  if (env === "production") {
+    return "https://popup.convos.org/v2";
+  }
+  return "https://dev.convos.org/v2";
+}
 const IMESSAGE_CHUNK_SIZE = 300;
 
 /**

@@ -128,6 +128,7 @@ export async function startAgent(
   // user.key is a hex string, cast to the expected type
   const convos = ConvosMiddleware.create(agent as any, {
     privateKey: user.key as unknown as `0x${string}`,
+    env,
   });
 
   agent.use(convos.middleware() as any);

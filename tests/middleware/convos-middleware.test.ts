@@ -112,7 +112,7 @@ describe("ConvosMiddleware", () => {
       );
 
       expect(invite.slug).toBeDefined();
-      expect(invite.url).toContain("popup.convos.org/v2");
+      expect(invite.url).toContain("dev.convos.org/v2");
       expect(invite.qrData).toBe(invite.url);
     });
 
@@ -126,7 +126,7 @@ describe("ConvosMiddleware", () => {
       });
 
       expect(invite.slug).toBeDefined();
-      expect(invite.url).toContain("popup.convos.org/v2");
+      expect(invite.url).toContain("dev.convos.org/v2");
     });
   });
 
@@ -459,7 +459,7 @@ describe("ConvosMiddleware", () => {
       const invite = await group.createInvite({ name: "My Chat" });
 
       expect(invite.slug).toBeDefined();
-      expect(invite.url).toContain("popup.convos.org/v2");
+      expect(invite.url).toContain("dev.convos.org/v2");
       expect(xmtpGroup.updateAppData).toHaveBeenCalled();
     });
 
@@ -477,7 +477,7 @@ describe("ConvosMiddleware", () => {
       const invite = await group.createInvite({ name: "My Chat" });
 
       expect(invite.slug).toBeDefined();
-      expect(invite.url).toContain("popup.convos.org/v2");
+      expect(invite.url).toContain("dev.convos.org/v2");
       // Should NOT have called updateAppData since metadata already exists
       expect(xmtpGroup.updateAppData).not.toHaveBeenCalled();
     });
