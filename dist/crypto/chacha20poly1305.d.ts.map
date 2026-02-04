@@ -1,0 +1,1 @@
+{"version":3,"file":"chacha20poly1305.d.ts","sourceRoot":"","sources":["../../src/crypto/chacha20poly1305.ts"],"names":[],"mappings":"AAMA;;;GAGG;AACH,wBAAgB,OAAO,CACrB,SAAS,EAAE,UAAU,EACrB,GAAG,EAAE,UAAU,EACf,GAAG,EAAE,UAAU,GACd,UAAU,CAUZ;AAED;;;;GAIG;AACH,wBAAgB,OAAO,CACrB,QAAQ,EAAE,UAAU,EACpB,GAAG,EAAE,UAAU,EACf,GAAG,EAAE,UAAU,GACd,UAAU,CAUZ"}
