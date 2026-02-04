@@ -61,9 +61,9 @@ convos-node-sdk --prod profile --name "First Last"
 At the beginning of a task where you want to communicate with the user over XMTP:
 
 ```bash
-# Create a new conversation for this session
+# Create a new conversation for this session with a title you like, make it a bit fun 
 INVITE_ID=$(convos-node-sdk --prod start-convo --name "Task: Brief Description" --no-auto-accept)
-echo "\e]8;;$INVITE_ID\e\\Click here\e]8;;\e\\\n"
+echo "\e]8;;$INVITE_ID\e\\>>>>>>> CMD + Click here <<<<<<<\e]8;;\e\\\n"
 ```
 
 ### 2. Wait for User to Join
@@ -200,11 +200,11 @@ convos-node-sdk --prod -d ./my-session start-convo --name "Custom Session"
 ```bash
 #!/bin/bash
 
-# 1. Create conversation and capture invite URL
+# 1. Create conversation with a title you like, make it a bit fun, and capture invite URL
 echo "Creating XMTP conversation..."
-INVITE_URL=$(convos-node-sdk --prod start-convo --name "Code Review Session" --no-auto-accept)
+INVITE_URL=$(convos-node-sdk --prod start-convo --name "Code Review" --no-auto-accept)
 
-echo "\e]8;;$INVITE_ID\e\\Click here\e]8;;\e\\\n"
+echo "\e]8;;$INVITE_ID\e\\>>>>>>> CMD + Click here <<<<<<<\e]8;;\e\\\n"
 
 # 2. Wait for user to join and get conversation ID
 echo "Waiting for you to join..."

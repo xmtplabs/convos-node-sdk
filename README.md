@@ -5,7 +5,7 @@ Middleware for the XMTP Node SDK that enables the use of the Convos identity sys
 ## Installation
 
 ```bash
-npm install convos-node-sdk
+npm install github:xmtplabs/convos-node-sdk
 ```
 
 ## SDK Usage
