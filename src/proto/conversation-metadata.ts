@@ -13,8 +13,9 @@ const ConversationCustomMetadataType = new protobuf.Type("ConversationCustomMeta
   .add(new protobuf.Field("expiresAtUnix", 3, "sfixed64", "optional"))
   .add(new protobuf.Field("imageEncryptionKey", 4, "bytes", "optional"));
 
-// Add nested type
+// Add nested type and register with root (required by protobufjs for type resolution)
 ConversationCustomMetadataType.add(ConversationProfileType);
+new protobuf.Root().add(ConversationCustomMetadataType);
 
 export interface ConversationProfile {
   inboxId: Uint8Array;
