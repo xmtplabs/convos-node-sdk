@@ -1,4 +1,4 @@
-import protobuf from "protobufjs";
+import { protobuf } from "./protobuf-setup.js";
 // Define InvitePayload schema programmatically
 const InvitePayloadType = new protobuf.Type("InvitePayload")
     .add(new protobuf.Field("conversationToken", 1, "bytes"))

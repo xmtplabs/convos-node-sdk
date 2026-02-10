@@ -1,4 +1,4 @@
-import protobuf from "protobufjs";
+import { protobuf } from "./protobuf-setup.js";
 // Define ConversationProfile schema
 const ConversationProfileType = new protobuf.Type("ConversationProfile")
     .add(new protobuf.Field("inboxId", 1, "bytes"))

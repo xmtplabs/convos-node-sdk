@@ -29,6 +29,7 @@
     "@noble/secp256k1": "^2.2.3",
     "@xmtp/agent-sdk": "^2.0.1",
     "commander": "^13.1.0",
+    "long": "^5.0.0",
     "pako": "^2.1.0",
     "protobufjs": "^7.4.0"
   },
