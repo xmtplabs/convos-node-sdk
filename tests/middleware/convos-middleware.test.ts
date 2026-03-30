@@ -221,6 +221,21 @@ describe("ConvosMiddleware", () => {
       expect(next).toHaveBeenCalled();
     });
 
+    it("should pass through raw transaction hash messages", async () => {
+      const agent = createMockAgent();
+      const convos = ConvosMiddleware.create(agent);
+      const middleware = convos.middleware();
+
+      const txHash = "0x7914ba84c3c4539eb00af35414b6a3dcd1cd3247d970638aa1406c5696d31540";
+      const dmCtx = createMockDmContext(txHash, joinerInboxId);
+      const next = vi.fn();
+      await middleware(dmCtx, next);
+
+      expect(mockRefreshConsentFn).not.toHaveBeenCalled();
+      expect(mockBlockFn).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalled();
+    });
+
     it("should pass through messages from self", async () => {
       const agent = createMockAgent();
       const convos = ConvosMiddleware.create(agent);

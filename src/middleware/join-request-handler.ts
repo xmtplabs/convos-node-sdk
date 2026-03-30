@@ -263,6 +263,11 @@ export class JoinRequestHandler {
    */
   private looksLikeInviteSlug(text: string): boolean {
     const trimmed = text.trim();
+    if (/^0x[a-fA-F0-9]{64}$/.test(trimmed)) {
+      // Raw transaction hashes are valid text payloads and should be routed to
+      // downstream handlers instead of being treated as malformed invite slugs.
+      return false;
+    }
     // Invite slugs are base64url encoded, typically 100+ chars
     // and may contain * separators
     if (trimmed.length < 50) return false;

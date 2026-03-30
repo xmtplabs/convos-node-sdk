@@ -94,6 +94,18 @@ describe("JoinRequestHandler", () => {
       expect(result.result).toBe(JoinRequestResult.BlockSender);
     });
 
+    it("should not treat raw transaction hashes as invite-like messages", async () => {
+      const handler = new JoinRequestHandler({
+        inboxId: testInboxId,
+        privateKey: testPrivateKey,
+      });
+
+      const txHash = "0x7914ba84c3c4539eb00af35414b6a3dcd1cd3247d970638aa1406c5696d31540";
+      const result = await handler.processMessage(txHash, joinerInboxId);
+
+      expect(result.result).toBe(JoinRequestResult.NotJoinRequest);
+    });
+
     it("should block invites from different creator", async () => {
       const differentInboxId = "different123456789012345678901234567890abcdef123456789012345678";
       const handler = new JoinRequestHandler({

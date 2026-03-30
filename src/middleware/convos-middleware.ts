@@ -612,6 +612,11 @@ export class ConvosMiddleware {
    */
   private looksLikeInviteSlug(text: string): boolean {
     const trimmed = text.trim();
+    if (/^0x[a-fA-F0-9]{64}$/.test(trimmed)) {
+      // Raw transaction hashes are valid text payloads and should be routed to
+      // downstream handlers instead of being treated as malformed invite slugs.
+      return false;
+    }
     if (trimmed.length < 50) return false;
     const base64UrlPattern = /^[A-Za-z0-9_\-*]+$/;
     return base64UrlPattern.test(trimmed);
