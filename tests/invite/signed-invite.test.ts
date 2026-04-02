@@ -109,6 +109,11 @@ describe("signedInvite", () => {
       const parsed = parseInviteSlug(url);
       expect(parsed.payload.tag).toBe(testTag);
     });
+
+    it("should reject invite-like strings that decode to an empty payload", () => {
+      expect(() => parseInviteSlug("8118")).toThrow("Invalid invite payload");
+      expect(() => parseInviteSlug("6018")).toThrow("Invalid invite payload");
+    });
   });
 
   describe("verifyInvite", () => {
