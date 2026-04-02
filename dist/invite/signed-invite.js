@@ -46,13 +46,17 @@ export function parseInviteSlug(slugOrUrl) {
     const bytes = decodeFromSlug(slug);
     const signedInvite = decodeSignedInvite(bytes);
     const payload = decodeInvitePayload(signedInvite.payload);
+    const creatorInboxId = bytesToHex(payload.creatorInboxId);
+    if (!creatorInboxId || !payload.tag || payload.conversationToken.length === 0) {
+        throw new Error("Invalid invite payload");
+    }
     const now = BigInt(Math.floor(Date.now() / 1000));
     const isExpired = payload.expiresAtUnix !== undefined && payload.expiresAtUnix < now;
     const isConversationExpired = payload.conversationExpiresAtUnix !== undefined && payload.conversationExpiresAtUnix < now;
     return {
         signedInvite,
         payload,
-        creatorInboxId: bytesToHex(payload.creatorInboxId),
+        creatorInboxId,
         isExpired,
         isConversationExpired,
     };
